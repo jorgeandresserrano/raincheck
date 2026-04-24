@@ -7,82 +7,326 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Phosphor Icons for modern sleek icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
-  <div class="app-container" id="app-container">
-    
-    <!-- Top Bar -->
-    <header class="top-bar">
-      <div class="location">
-        <i class="ph ph-map-pin"></i>
-        <span>San Francisco, CA</span>
-      </div>
-      <button class="settings-btn" aria-label="Settings">
-        <i class="ph ph-sliders-horizontal"></i>
-      </button>
-    </header>
-
-    <!-- Main Status Area -->
-    <main class="status-hero">
-      <div class="status-icon" id="status-icon">
-        <i class="ph-fill ph-sun"></i>
-      </div>
-      <h1 class="status-title" id="status-title">Safe to wash</h1>
-      <p class="status-subtitle" id="status-subtitle">Low precipitation risk for the next 24 hours.</p>
-    </main>
-
-    <!-- Controls Area -->
-    <div class="controls-panel">
-      <!-- Time Window Selection -->
-      <div class="control-group">
-        <label>Time Window</label>
-        <div class="segmented-control" id="time-window">
-          <button class="segment" data-val="6">6h</button>
-          <button class="segment" data-val="12">12h</button>
-          <button class="segment active" data-val="24">24h</button>
-          <button class="segment" data-val="48">48h</button>
-        </div>
-      </div>
-
-      <!-- Sensitivity Slider -->
-      <div class="control-group slider-group">
-        <div class="slider-header">
-          <label>Rain Tolerance</label>
-          <span id="tolerance-label" class="tolerance-label">Medium</span>
-        </div>
-        <input type="range" min="1" max="3" value="2" class="slider" id="tolerance-slider">
-        <div class="slider-ticks">
-          <span>Low</span>
-          <span>Med</span>
-          <span>High</span>
-        </div>
-      </div>
-
-      <!-- Detail Card -->
-      <div class="detail-card">
-        <div class="detail-row">
-          <div class="detail-item">
-            <i class="ph ph-drop"></i>
-            <span class="detail-val" id="pop-val">10%</span>
-            <span class="detail-label">Precipitation</span>
-          </div>
-          <div class="detail-item">
-            <i class="ph ph-cloud-rain"></i>
-            <span class="detail-val" id="vol-val">0.0 mm</span>
-            <span class="detail-label">Volume</span>
-          </div>
-          <div class="detail-item">
-            <i class="ph ph-check-circle"></i>
-            <span class="detail-val">High</span>
-            <span class="detail-label">Confidence</span>
-          </div>
-        </div>
-      </div>
+  <section class="prototype-rail" aria-label="Prototype screens">
+    <div class="prototype-rail__header">
+      <p class="prototype-rail__eyebrow">RainCheck · Option 1</p>
+      <h1>First-stage UI mock</h1>
+      <p class="prototype-rail__copy">Review the full app flow before we move into Flutter implementation.</p>
     </div>
-    
+
+    <div class="screen-selector" id="screen-selector">
+      <button class="screen-pill active" data-screen="onboarding">Onboarding</button>
+      <button class="screen-pill" data-screen="home">Home</button>
+      <button class="screen-pill" data-screen="notifications">Alerts</button>
+      <button class="screen-pill" data-screen="settings">Settings</button>
+    </div>
+  </section>
+
+  <div class="app-container" id="app-container" data-screen="onboarding" data-scenario="safe">
+    <section class="app-view active" data-view="onboarding">
+      <div class="onboarding-shell">
+        <div class="top-bar top-bar--simple">
+          <div class="wordmark">
+            <span class="wordmark__dot"></span>
+            <span>RainCheck</span>
+          </div>
+          <div class="mock-chip">Mock flow</div>
+        </div>
+
+        <main class="status-hero status-hero--onboarding">
+          <div class="status-icon status-icon--intro">
+            <i class="ph-fill ph-drop-half-bottom"></i>
+          </div>
+          <p class="eyebrow">Explain first</p>
+          <h2 class="status-title">Know if washing your car is worth it today.</h2>
+          <p class="status-subtitle">
+            RainCheck translates the forecast into one answer: safe to wash, or not worth it yet.
+          </p>
+
+          <div class="intro-points">
+            <article class="intro-point">
+              <i class="ph ph-clock-countdown"></i>
+              <div>
+                <strong>Pick a horizon</strong>
+                <span>Check the next 6, 12, 24, or 48 hours.</span>
+              </div>
+            </article>
+            <article class="intro-point">
+              <i class="ph ph-check-circle"></i>
+              <div>
+                <strong>Get a clear recommendation</strong>
+                <span>See whether conditions stay dry enough to make washing worth it.</span>
+              </div>
+            </article>
+            <article class="intro-point">
+              <i class="ph ph-bell"></i>
+              <div>
+                <strong>Come back later</strong>
+                <span>Enable alerts when a better wash window is approaching.</span>
+              </div>
+            </article>
+          </div>
+        </main>
+
+        <div class="controls-panel controls-panel--stacked">
+          <button class="primary-btn" id="use-location-btn">
+            <i class="ph ph-navigation-arrow"></i>
+            Use my location
+          </button>
+          <button class="secondary-btn" id="manual-entry-btn">Enter city manually</button>
+
+          <div class="manual-entry hidden" id="manual-entry-card">
+            <label for="manual-city">Manual fallback</label>
+            <div class="manual-entry__row">
+              <input id="manual-city" type="text" value="San Francisco, CA" aria-label="City">
+              <button class="inline-btn" id="save-city-btn">Use</button>
+            </div>
+            <p>Shown if location permission is denied, or if the user prefers manual control.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="app-view" data-view="home">
+      <header class="top-bar">
+        <div class="location">
+          <i class="ph ph-map-pin"></i>
+          <span id="location-label">San Francisco, CA</span>
+        </div>
+        <div class="variant-badge">Recommendation first</div>
+        <button class="settings-btn" aria-label="Settings" data-nav-target="settings">
+          <i class="ph ph-sliders-horizontal"></i>
+        </button>
+      </header>
+
+      <main class="status-hero">
+        <div class="status-icon" id="status-icon">
+          <i class="ph-fill ph-sun"></i>
+        </div>
+        <p class="eyebrow" id="status-eyebrow">Current recommendation</p>
+        <h2 class="status-title" id="status-title">Safe to wash</h2>
+        <p class="status-subtitle" id="status-subtitle">Low precipitation risk for the next 24 hours.</p>
+        <div class="hero-meta">
+          <span class="hero-meta__pill" id="valid-until">Valid until 8:00 PM</span>
+          <span class="hero-meta__pill" id="next-rain">No rain expected</span>
+        </div>
+      </main>
+
+      <div class="controls-panel">
+        <div class="control-group">
+          <div class="section-head">
+            <label>Time Window</label>
+            <span class="section-note">Decision horizon</span>
+          </div>
+          <div class="segmented-control" id="time-window">
+            <button class="segment" data-val="6">6h</button>
+            <button class="segment" data-val="12">12h</button>
+            <button class="segment active" data-val="24">24h</button>
+            <button class="segment" data-val="48">48h</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="section-head">
+            <label>Tolerance</label>
+            <span class="section-note" id="tolerance-label">Standard</span>
+          </div>
+          <div class="preset-group" id="tolerance-presets">
+            <button class="preset-pill" data-preset="1">Conservative</button>
+            <button class="preset-pill active" data-preset="2">Standard</button>
+            <button class="preset-pill" data-preset="3">Flexible</button>
+          </div>
+        </div>
+
+        <div class="detail-card detail-card--summary">
+          <div class="detail-row detail-row--stacked">
+            <div class="detail-lead">
+              <span class="detail-label detail-label--top">Why this recommendation</span>
+              <strong id="reason-copy">Only a light chance of drizzle late tonight.</strong>
+            </div>
+            <button class="detail-link" id="details-trigger">
+              Forecast details
+              <i class="ph ph-caret-right"></i>
+            </button>
+          </div>
+          <div class="detail-row">
+            <div class="detail-item">
+              <i class="ph ph-drop"></i>
+              <span class="detail-val" id="pop-val">10%</span>
+              <span class="detail-label">Rain chance</span>
+            </div>
+            <div class="detail-item">
+              <i class="ph ph-cloud-rain"></i>
+              <span class="detail-val" id="vol-val">0.0 mm</span>
+              <span class="detail-label">Rain amount</span>
+            </div>
+            <div class="detail-item">
+              <i class="ph ph-shield-check"></i>
+              <span class="detail-val" id="confidence-val">High</span>
+              <span class="detail-label">Confidence</span>
+            </div>
+          </div>
+          <div class="confidence-row">
+            <i class="ph ph-info"></i>
+            <span id="disclaimer-copy">Recommendation based on the latest forecast. Conditions can still change.</span>
+          </div>
+        </div>
+
+        <div class="scenario-panel">
+          <div class="section-head">
+            <label>Mock States</label>
+            <span class="section-note">Review edge cases</span>
+          </div>
+          <div class="scenario-grid" id="scenario-grid">
+            <button class="scenario-chip active" data-scenario="safe">Safe</button>
+            <button class="scenario-chip" data-scenario="notRecommended">Not recommended</button>
+            <button class="scenario-chip" data-scenario="loading">Loading</button>
+            <button class="scenario-chip" data-scenario="empty">Empty</button>
+            <button class="scenario-chip" data-scenario="offline">Offline</button>
+            <button class="scenario-chip" data-scenario="error">Error</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="app-view" data-view="notifications">
+      <header class="top-bar top-bar--simple">
+        <button class="ghost-btn" data-nav-target="home" aria-label="Back">
+          <i class="ph ph-caret-left"></i>
+        </button>
+        <div class="variant-badge">Notification opt-in</div>
+        <div class="ghost-btn ghost-btn--spacer"></div>
+      </header>
+
+      <main class="status-hero status-hero--narrow">
+        <div class="status-icon status-icon--bell">
+          <i class="ph-fill ph-bell-ringing"></i>
+        </div>
+        <p class="eyebrow">Optional alerts</p>
+        <h2 class="status-title">Get notified when a better wash window opens up.</h2>
+        <p class="status-subtitle">
+          Alerts should feel useful and rare. The goal is to tell the user when conditions are safely dry, not to become another noisy weather app.
+        </p>
+
+        <div class="notification-preview">
+          <div class="notification-card">
+            <span class="notification-card__time">Tomorrow · 8:15 AM</span>
+            <strong>Safe window detected</strong>
+            <p>Dry conditions expected from 9:00 AM to 5:00 PM in San Francisco.</p>
+          </div>
+          <div class="notification-card">
+            <span class="notification-card__time">Today · 5:40 PM</span>
+            <strong>Forecast changed</strong>
+            <p>Rain now looks likely tonight, so washing is no longer recommended.</p>
+          </div>
+        </div>
+      </main>
+
+      <div class="controls-panel controls-panel--stacked">
+        <button class="primary-btn" data-nav-target="home">Enable alerts</button>
+        <button class="secondary-btn" data-nav-target="home">Maybe later</button>
+      </div>
+    </section>
+
+    <section class="app-view" data-view="settings">
+      <header class="top-bar top-bar--simple">
+        <button class="ghost-btn" data-nav-target="home" aria-label="Back">
+          <i class="ph ph-caret-left"></i>
+        </button>
+        <div class="variant-badge">Preferences</div>
+        <div class="ghost-btn ghost-btn--spacer"></div>
+      </header>
+
+      <main class="settings-view">
+        <div class="settings-head">
+          <p class="eyebrow">Settings</p>
+          <h2>Keep the app practical and low-effort.</h2>
+          <p>These controls shape the recommendation without making the app feel overly technical.</p>
+        </div>
+
+        <div class="settings-card">
+          <div class="settings-row">
+            <div>
+              <strong>Location</strong>
+              <p>Current mock location used for recommendations.</p>
+            </div>
+            <button class="inline-btn" id="edit-location-btn">Change</button>
+          </div>
+          <div class="manual-entry manual-entry--inline hidden" id="settings-location-card">
+            <label for="settings-city">Manual city</label>
+            <div class="manual-entry__row">
+              <input id="settings-city" type="text" value="San Francisco, CA" aria-label="Manual city">
+              <button class="inline-btn" id="update-location-btn">Save</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <div class="section-head">
+            <label>Default horizon</label>
+            <span class="section-note">Used when the app opens</span>
+          </div>
+          <div class="segmented-control" id="default-horizon">
+            <button class="segment" data-default-val="6">6h</button>
+            <button class="segment" data-default-val="12">12h</button>
+            <button class="segment active" data-default-val="24">24h</button>
+            <button class="segment" data-default-val="48">48h</button>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <div class="section-head">
+            <label>Rain tolerance</label>
+            <span class="section-note">How cautious the recommendation should be</span>
+          </div>
+          <div class="preset-stack" id="settings-presets">
+            <button class="preset-option" data-settings-preset="1">
+              <strong>Conservative</strong>
+              <span>Avoid washing if even a moderate chance of rain appears.</span>
+            </button>
+            <button class="preset-option active" data-settings-preset="2">
+              <strong>Standard</strong>
+              <span>Balanced recommendation for typical users.</span>
+            </button>
+            <button class="preset-option" data-settings-preset="3">
+              <strong>Flexible</strong>
+              <span>More forgiving when the forecast only shows light risk.</span>
+            </button>
+          </div>
+        </div>
+      </main>
+    </section>
+
+    <div class="sheet-backdrop hidden" id="sheet-backdrop"></div>
+    <aside class="detail-sheet hidden" id="detail-sheet" aria-label="Forecast details">
+      <div class="detail-sheet__grabber"></div>
+      <div class="detail-sheet__header">
+        <div>
+          <p class="eyebrow">Forecast details</p>
+          <h3 id="sheet-title">Why RainCheck says it is safe.</h3>
+        </div>
+        <button class="ghost-btn" id="close-sheet" aria-label="Close details">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
+
+      <div class="detail-sheet__reason">
+        <strong id="sheet-reason">Only a light chance of drizzle late tonight.</strong>
+        <p id="sheet-disclaimer">Recommendation based on the latest forecast. Conditions can still change.</p>
+      </div>
+
+      <div class="timeline-list" id="timeline-list">
+        <article class="timeline-item">
+          <span>Now</span>
+          <strong>Clear</strong>
+          <small>5%</small>
+        </article>
+      </div>
+    </aside>
   </div>
 
   <script src="app.js"></script>
