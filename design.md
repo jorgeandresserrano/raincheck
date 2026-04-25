@@ -34,14 +34,14 @@ Within a few seconds of opening the app, the user should understand:
 ## Core Features To Reflect In The Design
 
 - Current location or selected location
-- User-selectable time window: `6h`, `12h`, `24h`, `48h`
+- User-selectable time window: `1 day`, `3 days`, `5 days`, `1 week`
 - Customizable rain tolerance or sensitivity
 - Simple recommendation output:
   - `Safe to wash`
   - `Not recommended`
 - Short explanation:
   - `Rain expected in 4 hours`
-  - `Low precipitation risk for the next 24 hours`
+  - `Low precipitation risk for the next day`
   - `High chance of rain tonight`
 - Forecast confidence or disclaimer that this is a recommendation, not a guarantee
 - Optional notification or “best wash window” suggestion
@@ -112,14 +112,14 @@ Desired UX qualities:
 
 Core features to reflect in the design:
 - current location or selected location
-- user-selectable time window: 6h, 12h, 24h, 48h
+- user-selectable time window: 1 day, 3 days, 5 days, 1 week
 - customizable rain tolerance or sensitivity
 - simple recommendation output:
   - Safe to wash
   - Not recommended
 - short explanation:
   - “Rain expected in 4 hours”
-  - “Low precipitation risk for the next 24 hours”
+  - “Low precipitation risk for the next day”
   - “High chance of rain tonight”
 - forecast confidence / disclaimer that this is a recommendation, not a guarantee
 - optional notification or “best wash window” suggestion

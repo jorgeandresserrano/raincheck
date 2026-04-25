@@ -49,7 +49,7 @@ final class RainCheckState {
   factory RainCheckState.initial() {
     return const RainCheckState(
       preferences: UserPreferences(
-        defaultHorizon: HorizonOption.h24,
+        defaultHorizon: HorizonOption.oneDay,
         tolerancePreset: RainTolerancePreset.standard,
         locationChoice: ManualLocation(
           cityName: 'San Francisco, CA',
@@ -57,7 +57,7 @@ final class RainCheckState {
           longitude: -122.4194,
         ),
       ),
-      selectedHorizon: HorizonOption.h24,
+      selectedHorizon: HorizonOption.oneDay,
       hasCompletedOnboarding: false,
       isResolvingLocation: false,
     );

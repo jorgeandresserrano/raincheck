@@ -85,7 +85,7 @@ void main() {
 
     expect(find.text('Safe to wash'), findsOneWidget);
 
-    await tester.tap(find.text('48h'));
+    await tester.tap(find.text('1 week'));
     await tester.pumpAndSettle();
 
     expect(find.text('32%'), findsOneWidget);
@@ -132,7 +132,7 @@ void main() {
       tester,
       initialPreferences: const PersistedRainCheckPreferences(
         preferences: UserPreferences(
-          defaultHorizon: HorizonOption.h12,
+          defaultHorizon: HorizonOption.threeDays,
           tolerancePreset: RainTolerancePreset.flexible,
           locationChoice: ManualLocation(
             cityName: 'Austin, TX',
@@ -140,7 +140,7 @@ void main() {
             longitude: -97.7431,
           ),
         ),
-        selectedHorizon: HorizonOption.h12,
+        selectedHorizon: HorizonOption.threeDays,
         hasCompletedOnboarding: true,
       ),
     );
@@ -189,7 +189,7 @@ final class _FakeRecommendationRepository implements RecommendationRepository {
     required HorizonOption horizon,
     required RainTolerancePreset tolerance,
   }) async {
-    final chance = horizon == HorizonOption.h48 ? '32%' : '12%';
+    final chance = horizon == HorizonOption.oneWeek ? '32%' : '12%';
     return RecommendationViewData(
       status: RecommendationStatus.safeToWash,
       headline: 'Safe to wash',

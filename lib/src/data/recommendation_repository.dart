@@ -29,7 +29,7 @@ final class OpenMeteoRecommendationRepository
       'latitude': location.latitude.toString(),
       'longitude': location.longitude.toString(),
       'hourly': 'precipitation_probability,precipitation',
-      'forecast_days': '3',
+      'forecast_days': horizon.forecastDays.toString(),
       'timezone': 'auto',
     });
 
@@ -64,7 +64,7 @@ final class OpenMeteoRecommendationRepository
       throw Exception('Forecast response did not include hourly rain data.');
     }
 
-    final hours = _horizonHours(horizon);
+    final hours = horizon.hours;
     final now = DateTime.now();
     final startIndex = max(
       0,
@@ -141,13 +141,6 @@ final class OpenMeteoRecommendationRepository
           }).toList(),
     );
   }
-
-  int _horizonHours(HorizonOption horizon) => switch (horizon) {
-    HorizonOption.h6 => 6,
-    HorizonOption.h12 => 12,
-    HorizonOption.h24 => 24,
-    HorizonOption.h48 => 48,
-  };
 
   _RiskThresholds _thresholds(RainTolerancePreset tolerance) =>
       switch (tolerance) {

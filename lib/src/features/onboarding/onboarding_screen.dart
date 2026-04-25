@@ -81,7 +81,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           const _OnboardingPoint(
             icon: Icons.schedule,
             title: 'Pick a horizon',
-            copy: 'Check the next 6, 12, 24, or 48 hours.',
+            copy: 'Check the next day, 3 days, 5 days, or week.',
           ),
           const SizedBox(height: RainCheckSpacing.sm),
           const _OnboardingPoint(

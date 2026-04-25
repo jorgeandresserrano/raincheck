@@ -1,18 +1,32 @@
-enum HorizonOption { h6, h12, h24, h48 }
+enum HorizonOption { oneDay, threeDays, fiveDays, oneWeek }
 
 extension HorizonOptionText on HorizonOption {
   String get label => switch (this) {
-    HorizonOption.h6 => '6h',
-    HorizonOption.h12 => '12h',
-    HorizonOption.h24 => '24h',
-    HorizonOption.h48 => '48h',
+    HorizonOption.oneDay => '1 day',
+    HorizonOption.threeDays => '3 days',
+    HorizonOption.fiveDays => '5 days',
+    HorizonOption.oneWeek => '1 week',
   };
 
   String get copy => switch (this) {
-    HorizonOption.h6 => 'next 6 hours',
-    HorizonOption.h12 => 'next 12 hours',
-    HorizonOption.h24 => 'next 24 hours',
-    HorizonOption.h48 => 'next 48 hours',
+    HorizonOption.oneDay => 'next day',
+    HorizonOption.threeDays => 'next 3 days',
+    HorizonOption.fiveDays => 'next 5 days',
+    HorizonOption.oneWeek => 'next week',
+  };
+
+  int get hours => switch (this) {
+    HorizonOption.oneDay => 24,
+    HorizonOption.threeDays => 72,
+    HorizonOption.fiveDays => 120,
+    HorizonOption.oneWeek => 168,
+  };
+
+  int get forecastDays => switch (this) {
+    HorizonOption.oneDay => 2,
+    HorizonOption.threeDays => 4,
+    HorizonOption.fiveDays => 6,
+    HorizonOption.oneWeek => 8,
   };
 }
 

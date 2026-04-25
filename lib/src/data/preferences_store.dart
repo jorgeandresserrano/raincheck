@@ -49,7 +49,7 @@ final class SharedPreferencesStore implements PreferencesStore {
     final selectedHorizon =
         _horizonFromName(storage.getString(_selectedHorizonKey)) ??
         _horizonFromName(storage.getString(_defaultHorizonKey)) ??
-        HorizonOption.h24;
+        HorizonOption.oneDay;
     final defaultHorizon =
         _horizonFromName(storage.getString(_defaultHorizonKey)) ??
         selectedHorizon;
@@ -113,8 +113,13 @@ final class SharedPreferencesStore implements PreferencesStore {
   }
 
   HorizonOption? _horizonFromName(String? name) {
+    final migratedName = switch (name) {
+      'h6' || 'h12' || 'h24' => HorizonOption.oneDay.name,
+      'h48' => HorizonOption.threeDays.name,
+      _ => name,
+    };
     for (final value in HorizonOption.values) {
-      if (value.name == name) {
+      if (value.name == migratedName) {
         return value;
       }
     }
