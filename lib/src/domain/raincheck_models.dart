@@ -103,6 +103,26 @@ final class ManualLocation extends LocationChoice {
   String get sourceLabel => 'Manual location';
 }
 
+final class LocationSuggestion {
+  const LocationSuggestion({
+    required this.label,
+    required this.latitude,
+    required this.longitude,
+  });
+
+  final String label;
+  final double latitude;
+  final double longitude;
+
+  ManualLocation toManualLocation() {
+    return ManualLocation(
+      cityName: label,
+      latitude: latitude,
+      longitude: longitude,
+    );
+  }
+}
+
 final class ForecastEvidenceItem {
   const ForecastEvidenceItem({
     required this.title,
@@ -122,6 +142,7 @@ final class RecommendationViewData {
     required this.status,
     required this.headline,
     required this.reason,
+    required this.detailReason,
     required this.validUntil,
     required this.nextRainLabel,
     required this.confidenceLabel,
@@ -137,6 +158,7 @@ final class RecommendationViewData {
   final RecommendationStatus status;
   final String headline;
   final String reason;
+  final String detailReason;
   final String validUntil;
   final String nextRainLabel;
   final String confidenceLabel;

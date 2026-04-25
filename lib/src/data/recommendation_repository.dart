@@ -116,6 +116,22 @@ final class OpenMeteoRecommendationRepository
           notRecommended
               ? _unsafeReason(maxProbability, totalPrecipitation, horizon)
               : _safeReason(maxProbability, totalPrecipitation, horizon),
+      detailReason:
+          notRecommended
+              ? _unsafeDetailReason(
+                probability: maxProbability,
+                precipitation: totalPrecipitation,
+                horizon: horizon,
+                tolerance: tolerance,
+                thresholds: thresholds,
+              )
+              : _safeDetailReason(
+                probability: maxProbability,
+                precipitation: totalPrecipitation,
+                horizon: horizon,
+                tolerance: tolerance,
+                thresholds: thresholds,
+              ),
       validUntil: 'Checked for ${horizon.copy}',
       nextRainLabel:
           firstRain == null
@@ -208,6 +224,45 @@ final class OpenMeteoRecommendationRepository
       return '${precipitation.toStringAsFixed(1)} mm of rain is forecast in the ${horizon.copy}.';
     }
     return 'Rain risk reaches $probability% in the ${horizon.copy}.';
+  }
+
+  String _unsafeDetailReason({
+    required int probability,
+    required double precipitation,
+    required HorizonOption horizon,
+    required RainTolerancePreset tolerance,
+    required _RiskThresholds thresholds,
+  }) {
+    final probabilityExceeded = probability >= thresholds.probability;
+    final precipitationExceeded = precipitation >= thresholds.precipitationMm;
+    final amount = precipitation.toStringAsFixed(1);
+    final amountLimit = thresholds.precipitationMm.toStringAsFixed(1);
+
+    if (precipitationExceeded && !probabilityExceeded) {
+      return 'Rain chances peak at $probability%, which is below ${tolerance.label} tolerance, but forecast rain adds up to $amount mm in the ${horizon.copy}. That is above the $amountLimit mm ${tolerance.label} amount limit, so washing may not hold up.';
+    }
+
+    if (probabilityExceeded && precipitationExceeded) {
+      return 'Rain risk reaches $probability% and forecast rain adds up to $amount mm in the ${horizon.copy}. Both are above ${tolerance.label} tolerance, so washing is not recommended.';
+    }
+
+    if (probabilityExceeded) {
+      return 'Rain risk reaches $probability% in the ${horizon.copy}, above the ${thresholds.probability}% ${tolerance.label} tolerance limit.';
+    }
+
+    return 'Forecast rain adds up to $amount mm in the ${horizon.copy}, above the $amountLimit mm ${tolerance.label} amount limit.';
+  }
+
+  String _safeDetailReason({
+    required int probability,
+    required double precipitation,
+    required HorizonOption horizon,
+    required RainTolerancePreset tolerance,
+    required _RiskThresholds thresholds,
+  }) {
+    final amount = precipitation.toStringAsFixed(1);
+    final amountLimit = thresholds.precipitationMm.toStringAsFixed(1);
+    return 'Rain chances peak at $probability% and forecast rain adds up to $amount mm in the ${horizon.copy}. Both stay within ${tolerance.label} tolerance: under ${thresholds.probability}% chance and under $amountLimit mm total rain.';
   }
 
   String _confidenceLabel(int probability) {

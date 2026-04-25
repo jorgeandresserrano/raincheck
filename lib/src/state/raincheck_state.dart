@@ -127,13 +127,10 @@ final class RainCheckController extends Notifier<RainCheckState> {
     return success;
   }
 
-  Future<bool> completeOnboardingWithManualLocation(String cityName) async {
-    final success = await updateLocation(cityName);
-    if (success) {
-      state = state.copyWith(hasCompletedOnboarding: true);
-      _persist();
-    }
-    return success;
+  void completeOnboardingWithManualLocation(LocationSuggestion suggestion) {
+    useManualLocation(suggestion);
+    state = state.copyWith(hasCompletedOnboarding: true);
+    _persist();
   }
 
   Future<bool> useDeviceLocation() async {
@@ -163,33 +160,14 @@ final class RainCheckController extends Notifier<RainCheckState> {
     }
   }
 
-  Future<bool> updateLocation(String cityName) async {
-    state = state.copyWith(isResolvingLocation: true, clearLocationError: true);
-    try {
-      final location = await ref
-          .read(locationServiceProvider)
-          .manualLocation(cityName);
-      state = state.copyWith(
-        isResolvingLocation: false,
-        clearLocationError: true,
-        preferences: state.preferences.copyWith(locationChoice: location),
-      );
-      _persist();
-      return true;
-    } on LocationServiceException catch (error) {
-      state = state.copyWith(
-        isResolvingLocation: false,
-        locationError: error.message,
-      );
-      return false;
-    } catch (_) {
-      state = state.copyWith(
-        isResolvingLocation: false,
-        locationError:
-            'Unable to find that city. Try a more specific location.',
-      );
-      return false;
-    }
+  void useManualLocation(LocationSuggestion suggestion) {
+    state = state.copyWith(
+      clearLocationError: true,
+      preferences: state.preferences.copyWith(
+        locationChoice: suggestion.toManualLocation(),
+      ),
+    );
+    _persist();
   }
 
   void selectHorizon(HorizonOption horizon) {

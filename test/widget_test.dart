@@ -69,8 +69,8 @@ void main() {
       find.byKey(const Key('manual-city-field')),
       'Austin, TX',
     );
-    await tester.tap(find.byKey(const Key('save-manual-city-button')));
     await tester.pump(const Duration(milliseconds: 500));
+    await tester.tap(find.byKey(const Key('location-suggestion-0')));
     await tester.pumpAndSettle();
 
     expect(find.text('Safe to wash'), findsOneWidget);
@@ -102,12 +102,53 @@ void main() {
     await tester.tap(find.text('Toronto, ON'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byKey(const Key('home-city-field')), 'Austin');
-    await tester.tap(find.byKey(const Key('sheet-save-location-button')));
     await tester.pump(const Duration(milliseconds: 500));
+    await tester.tap(find.byKey(const Key('location-suggestion-0')));
     await tester.pumpAndSettle();
 
     expect(find.text('Austin, TX'), findsOneWidget);
     expect(find.text('Manual location'), findsOneWidget);
+  });
+
+  testWidgets('manual location requires selecting a search suggestion', (
+    tester,
+  ) async {
+    await _pumpApp(tester);
+
+    await tester.tap(find.byKey(const Key('manual-entry-button')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('manual-city-field')), 'zzzz');
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('No matching places found. Try a city and state.'),
+      findsOneWidget,
+    );
+    expect(find.text('Safe to wash'), findsNothing);
+    expect(find.byKey(const Key('save-manual-city-button')), findsNothing);
+  });
+
+  testWidgets('location search clear button resets the query and suggestions', (
+    tester,
+  ) async {
+    await _pumpApp(tester);
+
+    await tester.tap(find.byKey(const Key('manual-entry-button')));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const Key('manual-city-field')),
+      'Austin',
+    );
+    await tester.pump(const Duration(milliseconds: 500));
+
+    expect(find.byKey(const Key('location-suggestion-0')), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('location-clear-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Austin, TX'), findsNothing);
+    expect(find.byKey(const Key('location-suggestion-0')), findsNothing);
   });
 
   testWidgets('forecast errors render a retryable production error state', (
@@ -164,19 +205,35 @@ final class _FakeLocationService implements LocationService {
   }
 
   @override
-  Future<LocationChoice> manualLocation(String query) async {
+  Future<List<LocationSuggestion>> searchLocations(String query) async {
     if (query.toLowerCase().contains('austin')) {
-      return const ManualLocation(
-        cityName: 'Austin, TX',
-        latitude: 30.2672,
-        longitude: -97.7431,
-      );
+      return const [
+        LocationSuggestion(
+          label: 'Austin, TX',
+          latitude: 30.2672,
+          longitude: -97.7431,
+        ),
+      ];
     }
-    return ManualLocation(
-      cityName: query,
-      latitude: 43.6532,
-      longitude: -79.3832,
-    );
+    if (query.toLowerCase().contains('san francisco')) {
+      return const [
+        LocationSuggestion(
+          label: 'San Francisco, CA',
+          latitude: 37.7749,
+          longitude: -122.4194,
+        ),
+      ];
+    }
+    if (query.toLowerCase().contains('toronto')) {
+      return const [
+        LocationSuggestion(
+          label: 'Toronto, ON',
+          latitude: 43.6532,
+          longitude: -79.3832,
+        ),
+      ];
+    }
+    return const [];
   }
 }
 
@@ -194,6 +251,8 @@ final class _FakeRecommendationRepository implements RecommendationRepository {
       status: RecommendationStatus.safeToWash,
       headline: 'Safe to wash',
       reason: 'No measurable rain is forecast in the ${horizon.copy}.',
+      detailReason:
+          'Rain chances and forecast rain stay within ${tolerance.label} tolerance for ${location.label}.',
       validUntil: 'Checked for ${horizon.copy}',
       nextRainLabel: 'No rain in window',
       confidenceLabel: 'High',

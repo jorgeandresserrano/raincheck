@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:raincheck/src/state/raincheck_state.dart';
 import 'package:raincheck/src/theme/raincheck_theme.dart';
+import 'package:raincheck/src/ui/location_search_field.dart';
 import 'package:raincheck/src/ui/raincheck_widgets.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -13,14 +14,7 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 }
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
-  final _cityController = TextEditingController(text: 'San Francisco, CA');
   bool _showManualEntry = false;
-
-  @override
-  void dispose() {
-    _cityController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -168,55 +162,22 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  TextField(
-                    key: const Key('manual-city-field'),
-                    controller: _cityController,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      labelText: 'City',
-                      labelStyle: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.74),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                          RainCheckRadii.card,
-                        ),
-                        borderSide: BorderSide(
-                          color: Colors.white.withValues(alpha: 0.24),
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                          RainCheckRadii.card,
-                        ),
-                        borderSide: const BorderSide(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: RainCheckSpacing.md),
-                  FilledButton(
-                    key: const Key('save-manual-city-button'),
-                    onPressed:
-                        appState.isResolvingLocation
-                            ? null
-                            : () async {
-                              final success = await ref
-                                  .read(rainCheckControllerProvider.notifier)
-                                  .completeOnboardingWithManualLocation(
-                                    _cityController.text,
-                                  );
-                              if (!context.mounted) {
-                                return;
-                              }
-                              if (success) {
-                                context.go('/home');
-                              }
-                            },
-                    child: Text(
-                      appState.isResolvingLocation
-                          ? 'Checking city'
-                          : 'Use this city',
-                    ),
+                  LocationSearchField(
+                    textFieldKey: const Key('manual-city-field'),
+                    initialQuery: 'San Francisco, CA',
+                    dark: true,
+                    onSelected: (suggestion) {
+                      if (suggestion == null) {
+                        return;
+                      }
+                      ref
+                          .read(rainCheckControllerProvider.notifier)
+                          .completeOnboardingWithManualLocation(suggestion);
+                      if (!context.mounted) {
+                        return;
+                      }
+                      context.go('/home');
+                    },
                   ),
                 ],
               ),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:raincheck/src/domain/raincheck_models.dart';
 import 'package:raincheck/src/state/raincheck_state.dart';
 import 'package:raincheck/src/theme/raincheck_theme.dart';
+import 'package:raincheck/src/ui/location_search_field.dart';
 import 'package:raincheck/src/ui/raincheck_widgets.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -365,7 +366,7 @@ class _RecommendationSummary extends StatelessWidget {
                     ),
                     const SizedBox(height: RainCheckSpacing.xs),
                     Text(
-                      recommendation.reason,
+                      recommendation.detailReason,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ],
@@ -469,27 +470,6 @@ class _LocationSheetContent extends ConsumerStatefulWidget {
 }
 
 class _LocationSheetContentState extends ConsumerState<_LocationSheetContent> {
-  late final TextEditingController _cityController;
-
-  @override
-  void initState() {
-    super.initState();
-    _cityController = TextEditingController(
-      text:
-          ref
-              .read(rainCheckControllerProvider)
-              .preferences
-              .locationChoice
-              .label,
-    );
-  }
-
-  @override
-  void dispose() {
-    _cityController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final appState = ref.watch(rainCheckControllerProvider);
@@ -543,30 +523,18 @@ class _LocationSheetContentState extends ConsumerState<_LocationSheetContent> {
               ),
             ),
             const SizedBox(height: RainCheckSpacing.md),
-            TextField(
-              key: const Key('home-city-field'),
-              controller: _cityController,
-              decoration: const InputDecoration(
-                labelText: 'City or address',
-                border: OutlineInputBorder(),
-              ),
-              textInputAction: TextInputAction.done,
-            ),
-            const SizedBox(height: RainCheckSpacing.sm),
-            OutlinedButton(
-              key: const Key('sheet-save-location-button'),
-              onPressed:
-                  appState.isResolvingLocation
-                      ? null
-                      : () async {
-                        final success = await controller.updateLocation(
-                          _cityController.text,
-                        );
-                        if (context.mounted && success) {
-                          Navigator.of(context).pop();
-                        }
-                      },
-              child: const Text('Use this location'),
+            LocationSearchField(
+              textFieldKey: const Key('home-city-field'),
+              initialQuery: appState.preferences.locationChoice.label,
+              onSelected: (suggestion) {
+                if (suggestion == null) {
+                  return;
+                }
+                controller.useManualLocation(suggestion);
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
+              },
             ),
           ],
         ),
