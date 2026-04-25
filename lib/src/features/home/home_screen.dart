@@ -624,11 +624,11 @@ Future<void> showRecommendationDetails(
               ),
               const SizedBox(height: RainCheckSpacing.md),
               Text(
-                'Hourly outlook',
+                recommendation.detailTitle,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: RainCheckSpacing.sm),
-              ...recommendation.hourlyItems.map(
+              ...recommendation.detailItems.map(
                 (item) => Padding(
                   padding: const EdgeInsets.only(bottom: RainCheckSpacing.sm),
                   child: SurfaceCard(
@@ -637,14 +637,24 @@ Future<void> showRecommendationDetails(
                         SizedBox(
                           width: 64,
                           child: Text(
-                            item.timeLabel,
+                            item.title,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ),
                         Expanded(
-                          child: Text(
-                            item.condition,
-                            style: Theme.of(context).textTheme.titleMedium,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                item.description,
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                item.rainAmountLabel,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ],
                           ),
                         ),
                         Text(

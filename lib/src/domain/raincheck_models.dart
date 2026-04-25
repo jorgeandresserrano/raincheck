@@ -103,16 +103,18 @@ final class ManualLocation extends LocationChoice {
   String get sourceLabel => 'Manual location';
 }
 
-final class HourlyForecastItem {
-  const HourlyForecastItem({
-    required this.timeLabel,
-    required this.condition,
+final class ForecastEvidenceItem {
+  const ForecastEvidenceItem({
+    required this.title,
+    required this.description,
     required this.rainChanceLabel,
+    required this.rainAmountLabel,
   });
 
-  final String timeLabel;
-  final String condition;
+  final String title;
+  final String description;
   final String rainChanceLabel;
+  final String rainAmountLabel;
 }
 
 final class RecommendationViewData {
@@ -124,7 +126,8 @@ final class RecommendationViewData {
     required this.nextRainLabel,
     required this.confidenceLabel,
     required this.disclaimer,
-    required this.hourlyItems,
+    required this.detailTitle,
+    required this.detailItems,
     required this.rainChanceLabel,
     required this.rainAmountLabel,
     required this.locationLabel,
@@ -138,7 +141,8 @@ final class RecommendationViewData {
   final String nextRainLabel;
   final String confidenceLabel;
   final String disclaimer;
-  final List<HourlyForecastItem> hourlyItems;
+  final String detailTitle;
+  final List<ForecastEvidenceItem> detailItems;
   final String rainChanceLabel;
   final String rainAmountLabel;
   final String locationLabel;

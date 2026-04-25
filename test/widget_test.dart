@@ -92,7 +92,7 @@ void main() {
     await tester.tap(find.byKey(const Key('details-button')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Hourly outlook'), findsOneWidget);
+    expect(find.text('1 week outlook'), findsOneWidget);
     expect(find.text('No rain expected'), findsWidgets);
   });
 
@@ -199,16 +199,22 @@ final class _FakeRecommendationRepository implements RecommendationRepository {
       confidenceLabel: 'High',
       disclaimer:
           'Recommendation based on the current forecast for ${location.label}. Forecasts can change.',
-      hourlyItems: const [
-        HourlyForecastItem(
-          timeLabel: '2 pm',
-          condition: 'No rain expected',
+      detailTitle:
+          horizon == HorizonOption.oneDay
+              ? 'Next 24 hours'
+              : '${horizon.label} outlook',
+      detailItems: const [
+        ForecastEvidenceItem(
+          title: 'Today',
+          description: 'No rain expected',
           rainChanceLabel: '8%',
+          rainAmountLabel: '0.0 mm',
         ),
-        HourlyForecastItem(
-          timeLabel: '3 pm',
-          condition: 'No rain expected',
+        ForecastEvidenceItem(
+          title: 'Tomorrow',
+          description: 'No rain expected',
           rainChanceLabel: '12%',
+          rainAmountLabel: '0.0 mm',
         ),
       ],
       rainChanceLabel: chance,

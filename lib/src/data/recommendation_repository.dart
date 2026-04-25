@@ -128,18 +128,57 @@ final class OpenMeteoRecommendationRepository
       rainAmountLabel: '${totalPrecipitation.toStringAsFixed(1)} mm',
       locationLabel: location.label,
       generatedAtLabel: 'Updated ${_formatHour(DateTime.now())}',
-      hourlyItems:
-          window.take(6).map((hour) {
-            return HourlyForecastItem(
-              timeLabel: _formatHour(hour.time),
-              condition:
-                  hour.precipitationMm > 0
-                      ? 'Rain possible'
-                      : 'No rain expected',
-              rainChanceLabel: '${hour.precipitationProbability}%',
-            );
-          }).toList(),
+      detailTitle:
+          horizon == HorizonOption.oneDay
+              ? 'Next 24 hours'
+              : '${horizon.label} outlook',
+      detailItems: _detailItemsForWindow(window, horizon),
     );
+  }
+
+  List<ForecastEvidenceItem> _detailItemsForWindow(
+    List<_ForecastHour> window,
+    HorizonOption horizon,
+  ) {
+    if (horizon == HorizonOption.oneDay) {
+      return window.map((hour) {
+        return ForecastEvidenceItem(
+          title: _formatHour(hour.time),
+          description:
+              hour.precipitationMm > 0 ? 'Rain possible' : 'No rain expected',
+          rainChanceLabel: '${hour.precipitationProbability}%',
+          rainAmountLabel: '${hour.precipitationMm.toStringAsFixed(1)} mm',
+        );
+      }).toList();
+    }
+
+    final grouped = <DateTime, List<_ForecastHour>>{};
+    for (final hour in window) {
+      final day = DateTime(hour.time.year, hour.time.month, hour.time.day);
+      grouped.putIfAbsent(day, () => []).add(hour);
+    }
+
+    return grouped.entries.map((entry) {
+      final hours = entry.value;
+      final maxProbability = hours
+          .map((hour) => hour.precipitationProbability)
+          .reduce(max);
+      final totalPrecipitation = hours.fold<double>(
+        0,
+        (sum, hour) => sum + hour.precipitationMm,
+      );
+      final wetHours = hours.where((hour) => hour.precipitationMm > 0).length;
+
+      return ForecastEvidenceItem(
+        title: _formatDay(entry.key),
+        description:
+            wetHours == 0
+                ? 'No measurable rain expected'
+                : '$wetHours wet ${wetHours == 1 ? 'hour' : 'hours'} expected',
+        rainChanceLabel: '$maxProbability%',
+        rainAmountLabel: '${totalPrecipitation.toStringAsFixed(1)} mm',
+      );
+    }).toList();
   }
 
   _RiskThresholds _thresholds(RainTolerancePreset tolerance) =>
@@ -183,6 +222,22 @@ final class OpenMeteoRecommendationRepository
     final period = hour >= 12 ? 'PM' : 'AM';
     final displayHour = hour % 12 == 0 ? 12 : hour % 12;
     return '$displayHour ${period.toLowerCase()}';
+  }
+
+  String _formatDay(DateTime time) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = today.add(const Duration(days: 1));
+    final day = DateTime(time.year, time.month, time.day);
+    if (day == today) {
+      return 'Today';
+    }
+    if (day == tomorrow) {
+      return 'Tomorrow';
+    }
+
+    const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return weekdays[day.weekday - 1];
   }
 }
 
