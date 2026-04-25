@@ -25,7 +25,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>RainCheck uses your location to check the local rain forecast before recommending whether to wash your car.</string>
+	<string>RainCheck uses your approximate location to check the local rain forecast before recommending whether to wash your car.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

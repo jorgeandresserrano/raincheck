@@ -26,7 +26,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         children: [
           Row(
             children: [
-              const Icon(Icons.water_drop, color: Colors.white),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.asset(
+                  RainCheckBackgroundAssets.appLogo,
+                  width: 28,
+                  height: 28,
+                ),
+              ),
               const SizedBox(width: RainCheckSpacing.sm),
               Expanded(
                 child: Text(
@@ -54,7 +61,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             ],
           ),
           const SizedBox(height: RainCheckSpacing.xl),
-          const Icon(Icons.cloud_queue, color: RainCheckColors.sun, size: 96),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(RainCheckRadii.card),
+              child: Image.asset(
+                RainCheckBackgroundAssets.appLogo,
+                width: 112,
+                height: 112,
+              ),
+            ),
+          ),
           const SizedBox(height: RainCheckSpacing.lg),
           const Eyebrow('First launch'),
           const SizedBox(height: RainCheckSpacing.sm),

@@ -39,6 +39,18 @@ class HomeScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(width: RainCheckSpacing.sm),
+                if (recommendation != null) ...[
+                  IconButton(
+                    key: const Key('details-button'),
+                    onPressed:
+                        () =>
+                            showRecommendationDetails(context, recommendation),
+                    icon: const Icon(Icons.info_outline),
+                    color: Colors.white,
+                    tooltip: 'Forecast details',
+                  ),
+                  const SizedBox(width: RainCheckSpacing.xs),
+                ],
                 IconButton.filledTonal(
                   key: const Key('refresh-location-button'),
                   onPressed:
@@ -69,7 +81,7 @@ class HomeScreen extends ConsumerWidget {
                   RainCheckSpacing.lg,
                   RainCheckSpacing.md,
                   RainCheckSpacing.lg,
-                  RainCheckSpacing.lg,
+                  RainCheckSpacing.xl,
                 ),
                 children: [
                   recommendationAsync.when(
@@ -79,56 +91,30 @@ class HomeScreen extends ConsumerWidget {
                           message:
                               'Forecast unavailable for ${appState.preferences.locationChoice.label}. Pull to retry.',
                         ),
-                    data:
-                        (data) => Column(
-                          children: [
-                            _RecommendationHero(recommendation: data),
-                            const SizedBox(height: RainCheckSpacing.xl),
-                          ],
-                        ),
+                    data: (data) => _RecommendationHero(recommendation: data),
                   ),
-                  FrostedPanel(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SectionHeader(
-                          title: 'Time window',
-                          trailing: appState.selectedHorizon.copy,
-                        ),
-                        const SizedBox(height: RainCheckSpacing.sm),
-                        HorizonSelector(
-                          selected: appState.selectedHorizon,
-                          onSelected:
-                              ref
-                                  .read(rainCheckControllerProvider.notifier)
-                                  .selectHorizon,
-                        ),
-                        const SizedBox(height: RainCheckSpacing.lg),
-                        SectionHeader(
-                          title: 'Tolerance',
-                          trailing: appState.preferences.tolerancePreset.label,
-                        ),
-                        const SizedBox(height: RainCheckSpacing.sm),
-                        TolerancePresetSelector(
-                          selected: appState.preferences.tolerancePreset,
-                          onSelected:
-                              ref
-                                  .read(rainCheckControllerProvider.notifier)
-                                  .setTolerance,
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (recommendation != null) ...[
-                    const SizedBox(height: RainCheckSpacing.md),
-                    _RecommendationSummary(recommendation: recommendation),
-                  ],
                   if (appState.locationError != null) ...[
                     const SizedBox(height: RainCheckSpacing.md),
                     _InlineWarning(message: appState.locationError!),
                   ],
                 ],
               ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              RainCheckSpacing.md,
+              RainCheckSpacing.xs,
+              RainCheckSpacing.md,
+              RainCheckSpacing.md,
+            ),
+            child: _WashPreferencesPanel(
+              selectedHorizon: appState.selectedHorizon,
+              selectedTolerance: appState.preferences.tolerancePreset,
+              onHorizonSelected:
+                  ref.read(rainCheckControllerProvider.notifier).selectHorizon,
+              onToleranceSelected:
+                  ref.read(rainCheckControllerProvider.notifier).setTolerance,
             ),
           ),
         ],
@@ -198,6 +184,100 @@ class _LocationPill extends StatelessWidget {
   }
 }
 
+class _WashPreferencesPanel extends StatelessWidget {
+  const _WashPreferencesPanel({
+    required this.selectedHorizon,
+    required this.selectedTolerance,
+    required this.onHorizonSelected,
+    required this.onToleranceSelected,
+  });
+
+  final HorizonOption selectedHorizon;
+  final RainTolerancePreset selectedTolerance;
+  final ValueChanged<HorizonOption> onHorizonSelected;
+  final ValueChanged<RainTolerancePreset> onToleranceSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return FrostedPanel(
+      padding: const EdgeInsets.all(RainCheckSpacing.sm),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _CompactOptionRow<HorizonOption>(
+            options: HorizonOption.values,
+            selected: selectedHorizon,
+            optionLabel: (horizon) => horizon.label,
+            onSelected: onHorizonSelected,
+          ),
+          const SizedBox(height: RainCheckSpacing.xs),
+          _CompactOptionRow<RainTolerancePreset>(
+            options: RainTolerancePreset.values,
+            selected: selectedTolerance,
+            optionLabel: (preset) => preset.label,
+            onSelected: onToleranceSelected,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CompactOptionRow<T> extends StatelessWidget {
+  const _CompactOptionRow({
+    required this.options,
+    required this.selected,
+    required this.optionLabel,
+    required this.onSelected,
+  });
+
+  final List<T> options;
+  final T selected;
+  final String Function(T option) optionLabel;
+  final ValueChanged<T> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        for (final option in options)
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: TextButton(
+                onPressed: () => onSelected(option),
+                style: TextButton.styleFrom(
+                  minimumSize: const Size(0, 38),
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  foregroundColor:
+                      option == selected ? RainCheckColors.ink : Colors.white,
+                  backgroundColor:
+                      option == selected
+                          ? Colors.white.withValues(alpha: 0.88)
+                          : Colors.white.withValues(alpha: 0.08),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(RainCheckRadii.card),
+                    side: BorderSide(
+                      color: Colors.white.withValues(
+                        alpha: option == selected ? 0.62 : 0.16,
+                      ),
+                    ),
+                  ),
+                  textStyle: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                child: FittedBox(child: Text(optionLabel(option))),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
 class _RecommendationHero extends StatelessWidget {
   const _RecommendationHero({required this.recommendation});
 
@@ -205,47 +285,15 @@ class _RecommendationHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isWarning =
-        recommendation.status == RecommendationStatus.notRecommended;
-    final icon = isWarning ? Icons.cloudy_snowing : Icons.wb_sunny_rounded;
-
-    return Column(
-      children: [
-        Icon(
-          icon,
-          size: 112,
-          color: isWarning ? Colors.white : RainCheckColors.sun,
-        ),
-        const SizedBox(height: RainCheckSpacing.md),
-        const Eyebrow('Current recommendation'),
-        const SizedBox(height: RainCheckSpacing.sm),
-        Text(
-          recommendation.headline,
-          textAlign: TextAlign.center,
-          style: Theme.of(
-            context,
-          ).textTheme.headlineLarge?.copyWith(color: Colors.white),
-        ),
-        const SizedBox(height: RainCheckSpacing.md),
-        Text(
-          recommendation.reason,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: Colors.white.withValues(alpha: 0.86),
-          ),
-        ),
-        const SizedBox(height: RainCheckSpacing.md),
-        Wrap(
-          alignment: WrapAlignment.center,
-          spacing: RainCheckSpacing.sm,
-          runSpacing: RainCheckSpacing.sm,
-          children: [
-            _HeroChip(label: recommendation.validUntil),
-            _HeroChip(label: recommendation.nextRainLabel),
-            _HeroChip(label: recommendation.generatedAtLabel),
-          ],
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: RainCheckSpacing.xl),
+      child: Text(
+        recommendation.headline,
+        textAlign: TextAlign.center,
+        style: Theme.of(
+          context,
+        ).textTheme.headlineLarge?.copyWith(color: Colors.white),
+      ),
     );
   }
 }
@@ -312,38 +360,8 @@ class _RecommendationError extends StatelessWidget {
   }
 }
 
-class _HeroChip extends StatelessWidget {
-  const _HeroChip({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.14),
-        borderRadius: BorderRadius.circular(RainCheckRadii.pill),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: RainCheckSpacing.md,
-          vertical: RainCheckSpacing.sm,
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.86),
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _RecommendationSummary extends StatelessWidget {
-  const _RecommendationSummary({required this.recommendation});
+class _RecommendationOverview extends StatelessWidget {
+  const _RecommendationOverview({required this.recommendation});
 
   final RecommendationViewData recommendation;
 
@@ -357,27 +375,10 @@ class _RecommendationSummary extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Eyebrow(
-                      'Why this recommendation',
-                      color: RainCheckColors.mutedInk,
-                    ),
-                    const SizedBox(height: RainCheckSpacing.xs),
-                    Text(
-                      recommendation.detailReason,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ],
+                child: Text(
+                  recommendation.detailReason,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
-              ),
-              TextButton.icon(
-                key: const Key('details-button'),
-                onPressed:
-                    () => showRecommendationDetails(context, recommendation),
-                icon: const Icon(Icons.expand_less),
-                label: const Text('Details'),
               ),
             ],
           ),
@@ -567,6 +568,8 @@ Future<void> showRecommendationDetails(
               RainCheckSpacing.lg,
             ),
             children: [
+              _RecommendationOverview(recommendation: recommendation),
+              const SizedBox(height: RainCheckSpacing.md),
               Text(
                 recommendation.status == RecommendationStatus.safeToWash
                     ? 'Why RainCheck says it is safe'

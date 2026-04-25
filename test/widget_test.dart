@@ -88,10 +88,11 @@ void main() {
     await tester.tap(find.text('1 week'));
     await tester.pumpAndSettle();
 
-    expect(find.text('32%'), findsOneWidget);
+    expect(find.text('32%'), findsNothing);
     await tester.tap(find.byKey(const Key('details-button')));
     await tester.pumpAndSettle();
 
+    expect(find.text('32%'), findsWidgets);
     expect(find.text('1 week outlook'), findsOneWidget);
     expect(find.text('No rain expected'), findsWidgets);
   });

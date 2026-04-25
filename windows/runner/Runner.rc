@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.raincheck" "\0"
-            VALUE "FileDescription", "raincheck" "\0"
+            VALUE "CompanyName", "RainCheck" "\0"
+            VALUE "FileDescription", "RainCheck" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "raincheck" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.raincheck. All rights reserved." "\0"
+            VALUE "InternalName", "RainCheck" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 RainCheck. All rights reserved." "\0"
             VALUE "OriginalFilename", "raincheck.exe" "\0"
-            VALUE "ProductName", "raincheck" "\0"
+            VALUE "ProductName", "RainCheck" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

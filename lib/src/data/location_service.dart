@@ -53,7 +53,7 @@ final class DeviceLocationService implements LocationService {
 
     final position = await Geolocator.getCurrentPosition(
       locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.medium,
+        accuracy: LocationAccuracy.low,
       ),
     );
     final label = await _labelForCoordinates(

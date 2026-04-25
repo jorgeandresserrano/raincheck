@@ -1,11 +1,11 @@
 {
-    "name": "raincheck",
-    "short_name": "raincheck",
+    "name": "RainCheck",
+    "short_name": "RainCheck",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#17324A",
+    "theme_color": "#17324A",
+    "description": "A car-wash decision app that turns rain forecasts into a clear wash-or-wait recommendation.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
