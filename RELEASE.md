@@ -26,7 +26,7 @@ jarsigner -verify -verbose -certs build/app/outputs/bundle/release/app-release.a
 ## iOS
 
 - Set the Apple team and signing profile in Xcode.
-- Confirm `com.raincheck.raincheck` is available in Apple Developer.
+- Confirm `com.jorgeandresserrano.raincheck` is available in Apple Developer.
 - Create the App Store Connect app record.
 - Build/archive from Xcode or run the Flutter iOS release build with signing configured.
 

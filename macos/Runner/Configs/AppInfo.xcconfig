@@ -8,7 +8,7 @@
 PRODUCT_NAME = RainCheck
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.raincheck.raincheck
+PRODUCT_BUNDLE_IDENTIFIER = com.jorgeandresserrano.raincheck
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2026 RainCheck. All rights reserved.

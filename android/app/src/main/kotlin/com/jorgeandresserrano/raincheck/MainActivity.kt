@@ -1,4 +1,4 @@
-package com.raincheck.raincheck
+package com.jorgeandresserrano.raincheck
 
 import io.flutter.embedding.android.FlutterActivity
 

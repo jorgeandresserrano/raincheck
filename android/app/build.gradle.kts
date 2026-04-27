@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.raincheck.raincheck"
+    namespace = "com.jorgeandresserrano.raincheck"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
@@ -22,7 +22,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.raincheck.raincheck"
+        applicationId = "com.jorgeandresserrano.raincheck"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
