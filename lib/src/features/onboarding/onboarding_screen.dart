@@ -24,55 +24,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       child: ListView(
         padding: const EdgeInsets.all(RainCheckSpacing.lg),
         children: [
-          Row(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.asset(
-                  RainCheckBackgroundAssets.appLogo,
-                  width: 28,
-                  height: 28,
-                ),
-              ),
-              const SizedBox(width: RainCheckSpacing.sm),
-              Expanded(
-                child: Text(
-                  'RainCheck',
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(color: Colors.white),
-                ),
-              ),
-              const SizedBox(width: RainCheckSpacing.sm),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.16),
-                  borderRadius: BorderRadius.circular(RainCheckRadii.pill),
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  child: Text(
-                    'Ready',
-                    style: TextStyle(color: Colors.white, fontSize: 12),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: RainCheckSpacing.xl),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(RainCheckRadii.card),
-              child: Image.asset(
-                RainCheckBackgroundAssets.appLogo,
-                width: 112,
-                height: 112,
-              ),
-            ),
-          ),
-          const SizedBox(height: RainCheckSpacing.lg),
           const Eyebrow('First launch'),
           const SizedBox(height: RainCheckSpacing.sm),
           Text(
